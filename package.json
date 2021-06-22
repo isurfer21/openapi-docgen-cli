@@ -1,0 +1,23 @@
+{
+  "name": "oadg",
+  "version": "1.0.0",
+  "description": "It is a command-line tool to generate an OpenAPI document as output by reading the provided Swagger/OpenAPI based `.json` or `.yaml` file.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/isurfer21/openapi-docgen-cli.git"
+  },
+  "author": "Abhishek Kumar",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/isurfer21/openapi-docgen-cli/issues"
+  },
+  "homepage": "https://github.com/isurfer21/openapi-docgen-cli#readme",
+  "dependencies": {
+    "minimist": "^1.2.5",
+    "yaml": "^1.10.2"
+  }
+}
