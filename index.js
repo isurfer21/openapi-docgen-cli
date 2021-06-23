@@ -1,15 +1,20 @@
 const fs = require('fs');
 const path = require('path');
+const http = require('http');
 const minimist = require('minimist');
 const YAML = require('yaml');
+const open = require('open');
 
 const appName = 'oadg';
-const appVersion = '1.0.0';
+const appVersion = '1.1.0';
 const appTitle = 'OpenAPI DocGen';
 const appCreationYear = 2021;
 
 var currentYear = (new Date()).getFullYear();
 var copyrightYear = (currentYear <= appCreationYear) ? appCreationYear : `${appCreationYear}-${currentYear}`;
+
+const appHost = '127.0.0.1';
+const appPort = 8080;
 
 var argv = minimist(process.argv.slice(2));
 // console.log(argv);
@@ -23,24 +28,30 @@ Usages:
   oadg (--help|--version)
   oadg <filepath> (<output>) (--integrated)
   oadg <filepath> (<output>) (--json|--yaml) --isolated
+  oadg <filepath> --dev (--host=<hostaddr>) (--port=<portnum>)
 
 Parameters:
   filepath    Input Swagger or OpenAPI filepath
   output      Output file/dir name
+  hostaddr    Serving host address for dev server
+  portnum     Serving port number for dev server
 
 Options:
-  -h --help          Show help
-  -v --version       Show version
-  -j --json          Target output as JSON file
-  -y --yaml          Target output as YAML file
-     --isolated      Generate isolated files
-     --integrated    Generate integrated file (default)
+  -h --help               Show help
+  -v --version            Show version
+  -j --json               Target output as JSON file
+  -y --yaml               Target output as YAML file
+  -s --isolated           Generate isolated files
+  -n --integrated         Generate integrated file [default: true]
+  -d --dev                Start dev server at <filepath> directory
+  -u --host=<hostaddr>    Set host of dev server [default: localhost]
+  -p --port=<portnum>     Set host of dev server [default: 8080]
   `);
 } else if (argv.v || argv.version) {
     console.log(`${appName} ~ ${appTitle} 
 Version ${appVersion}
-(c) ${copyrightYear} Abhishek Kumar
-Licensed under MIT license
+Copyright (c) ${copyrightYear} Abhishek Kumar
+Licensed under MIT License
 `);
 } else {
     let filePath = argv._[0];
@@ -55,7 +66,7 @@ Licensed under MIT license
             }
             let fileName = fileBase + fileType;
             if (['.json', '.yaml', '.yml'].indexOf(fileType) >= 0) {
-                if (!!argv.isolated) {
+                if (!!argv.s || !!argv.isolated || !!argv.d || !!argv.dev) {
                     let templatePath = path.join('templates', 'RapiDoc.html');
                     fs.readFile(templatePath, 'utf8', (err, data) => {
                         if (err) {
@@ -106,6 +117,26 @@ Licensed under MIT license
                                 return;
                             }
                             console.log(`Document generated at ${outFilePathHtml}`);
+                            if (!!argv.d || !!arg.dev) {
+                                let host = argv.h || argv.host || appHost;
+                                let port = argv.p || argv.port || appPort;
+                                const server = http.createServer((req, res) => {
+                                    fs.readFile(__dirname + req.url, function(err, data) {
+                                        if (err) {
+                                            res.writeHead(404);
+                                            res.end(JSON.stringify(err));
+                                            return;
+                                        }
+                                        res.writeHead(200);
+                                        res.end(data);
+                                    });
+                                });
+                                server.listen(port, host, async () => {
+                                    let url = `http://${host}:${port}/${outFilePathHtml}`;
+                                    console.log(`Serving at ${url}`);
+                                    await open(url);
+                                });
+                            }
                         });
                     });
                 } else {
