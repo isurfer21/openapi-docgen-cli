@@ -1,4 +1,4 @@
-# sample-docgen-cli
+# openapi-docgen-cli
 
 It is a command-line tool to generate an OpenAPI document as output by reading the provided Swagger/OpenAPI based `.json` or `.yaml` file.
 

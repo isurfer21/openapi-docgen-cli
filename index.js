@@ -6,7 +6,7 @@ const YAML = require('yaml');
 const open = require('open');
 
 const appName = 'oadg';
-const appVersion = '1.1.0';
+const appVersion = '1.1.1';
 const appTitle = 'OpenAPI DocGen';
 const appCreationYear = 2021;
 
