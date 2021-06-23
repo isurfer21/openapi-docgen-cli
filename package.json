@@ -1,6 +1,6 @@
 {
   "name": "oadg",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "It is a command-line tool to generate an OpenAPI document as output by reading the provided Swagger/OpenAPI based `.json` or `.yaml` file.",
   "main": "index.js",
   "scripts": {

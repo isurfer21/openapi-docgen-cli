@@ -8,7 +8,7 @@ const YAML = require('yaml');
 const open = require('open');
 
 const appName = 'oadg';
-const appVersion = '1.1.2';
+const appVersion = '1.1.3';
 const appTitle = 'OpenAPI DocGen';
 const appCreationYear = 2021;
 
@@ -69,14 +69,14 @@ Licensed under MIT License
             let fileName = fileBase + fileType;
             if (['.json', '.yaml', '.yml'].indexOf(fileType) >= 0) {
                 if (!!argv.s || !!argv.isolated || !!argv.d || !!argv.dev) {
-                    let templatePath = path.join('templates', 'RapiDoc.html');
+                    let templatePath = path.join(__dirname, 'templates', 'RapiDoc.html');
                     fs.readFile(templatePath, 'utf8', (err, data) => {
                         if (err) {
                             console.error(err);
                             return;
                         }
                         let openApiFileName = fileName;
-                        if (fileType == '.json' && !!argv.yaml) {
+                        if (fileType == '.json' && (!!argv.y || !!argv.yaml)) {
                             let openApiFilePath = outFilePath + '.yaml';
                             openApiFileName = path.basename(openApiFilePath);
                             fs.readFile(filePath, 'utf8', (err, data) => {
@@ -93,7 +93,7 @@ Licensed under MIT License
                                     console.log(`OpenAPI generated at ${openApiFilePath}`);
                                 });
                             });
-                        } else if (fileType == '.yaml' && !!argv.json) {
+                        } else if (fileType == '.yaml' && (!!argv.j || !!argv.json)) {
                             let openApiFilePath = outFilePath + '.json';
                             openApiFileName = path.basename(openApiFilePath);
                             fs.readFile(filePath, 'utf8', (err, data) => {
@@ -119,11 +119,13 @@ Licensed under MIT License
                                 return;
                             }
                             console.log(`Document generated at ${outFilePathHtml}`);
-                            if (!!argv.d || !!arg.dev) {
+                            if (!!argv.d || !!argv.dev) {
                                 let host = argv.h || argv.host || appHost;
                                 let port = argv.p || argv.port || appPort;
+                                const devServerRoot = path.resolve(path.dirname(outFilePath));
                                 const server = http.createServer((req, res) => {
-                                    fs.readFile(__dirname + req.url, function(err, data) {
+                                    let reqFilePath = path.join(devServerRoot, req.url);
+                                    fs.readFile(reqFilePath, function(err, data) {
                                         if (err) {
                                             res.writeHead(404);
                                             res.end(JSON.stringify(err));
@@ -134,7 +136,8 @@ Licensed under MIT License
                                     });
                                 });
                                 server.listen(port, host, async () => {
-                                    let url = `http://${host}:${port}/${outFilePathHtml}`;
+                                    let page = path.basename(outFilePathHtml);
+                                    let url = `http://${host}:${port}/${page}`;
                                     console.log(`Serving at ${url}`);
                                     await open(url);
                                 });
@@ -153,7 +156,7 @@ Licensed under MIT License
                         } else if (fileType == '.yaml' || fileType == '.yml') {
                             openApiFileContent = JSON.stringify(YAML.parse(openApiFileContent));
                         }
-                        let templatePath = path.join('templates', 'RapiDoc-standalone.html');
+                        let templatePath = path.join(__dirname, 'templates', 'RapiDoc-standalone.html');
                         fs.readFile(templatePath, 'utf8', (err, data) => {
                             if (err) {
                                 console.error(err);
