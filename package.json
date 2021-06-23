@@ -1,10 +1,11 @@
 {
   "name": "oadg",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "It is a command-line tool to generate an OpenAPI document as output by reading the provided Swagger/OpenAPI based `.json` or `.yaml` file.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -20,5 +21,8 @@
     "minimist": "^1.2.5",
     "open": "^8.2.1",
     "yaml": "^1.10.2"
+  },
+  "bin": {
+    "oadg": "./index.js"
   }
 }
