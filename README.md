@@ -1,5 +1,22 @@
 # sample-docgen-cli
-It is a command-line tool to generate an OpenAPI document as output by reading the provided Swagger/OpenAPI based `.json` or `.yaml` file. 
+
+It is a command-line tool to generate an OpenAPI document as output by reading the provided Swagger/OpenAPI based `.json` or `.yaml` file.
+
+## Prerequisite
+
+You should have these applications installed at your system.
+
+- `node.js`
+- `npm` (usually it comes along with `node.js`)
+
+## Setup
+
+You can install it at your system via `npm` 
+
+```shell
+npm install oadg
+
+```
 
 ## Usage
 
@@ -37,6 +54,10 @@ Options:
 ```
 
 You can use any combination of above listed **Usages** patterns.
+
+## Use-cases
+
+Below are the various use cases of this app. Just find out the one relevant for you.
 
 ### Generate single-file embedded doc with default name 
 
