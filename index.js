@@ -8,7 +8,7 @@ const YAML = require('yaml');
 const open = require('open');
 
 const appName = 'oadg';
-const appVersion = '1.1.3';
+const appVersion = '1.2.0';
 const appTitle = 'OpenAPI DocGen';
 const appCreationYear = 2021;
 
@@ -28,9 +28,10 @@ It is a command-line tool to generate an OpenAPI document as output by reading t
 
 Usages:
   oadg (--help|--version)
-  oadg <filepath> (<output>) (--integrated)
-  oadg <filepath> (<output>) (--json|--yaml) --isolated
-  oadg <filepath> --dev (--host=<hostaddr>) (--port=<portnum>)
+  oadg <filepath> [<output>] [--integrated]
+  oadg <filepath> [<output>] (--json|--yaml)
+  oadg <filepath> [<output>] [--json|--yaml] --isolated
+  oadg <filepath> --dev [--host=<hostaddr>] [--port=<portnum>]
 
 Parameters:
   filepath    Input Swagger or OpenAPI filepath
@@ -150,28 +151,65 @@ Licensed under MIT License
                             console.error(err);
                             return;
                         }
-                        let openApiFileContent = data;
-                        if (fileType == '.json') {
-                            openApiFileContent = openApiFileContent;
-                        } else if (fileType == '.yaml' || fileType == '.yml') {
-                            openApiFileContent = JSON.stringify(YAML.parse(openApiFileContent));
-                        }
-                        let templatePath = path.join(__dirname, 'templates', 'RapiDoc-standalone.html');
-                        fs.readFile(templatePath, 'utf8', (err, data) => {
-                            if (err) {
-                                console.error(err);
-                                return;
-                            }
-                            let templateContent = data.replace('OpenApiFileContent', openApiFileContent);
-                            outFilePathHtml = outFilePath + '.html';
-                            fs.writeFile(outFilePathHtml, templateContent, err => {
+                        let openApiFileName = fileName;
+                        if (fileType == '.json' && (!!argv.y || !!argv.yaml)) {
+                            let openApiFilePath = outFilePath + '.yaml';
+                            openApiFileName = path.basename(openApiFilePath);
+                            fs.readFile(filePath, 'utf8', (err, data) => {
                                 if (err) {
                                     console.error(err);
                                     return;
                                 }
-                                console.log(`Document generated at ${outFilePathHtml}`);
+                                let openApiFileContent = YAML.stringify(JSON.parse(data));
+                                fs.writeFile(openApiFilePath, openApiFileContent, err => {
+                                    if (err) {
+                                        console.error(err);
+                                        return;
+                                    }
+                                    console.log(`File converted at ${openApiFilePath}`);
+                                });
                             });
-                        });
+                        } else if (fileType == '.yaml' && (!!argv.j || !!argv.json)) {
+                            let openApiFilePath = outFilePath + '.json';
+                            openApiFileName = path.basename(openApiFilePath);
+                            fs.readFile(filePath, 'utf8', (err, data) => {
+                                if (err) {
+                                    console.error(err);
+                                    return;
+                                }
+                                let openApiFileContent = JSON.stringify(YAML.parse(data), null, 2);
+                                fs.writeFile(openApiFilePath, openApiFileContent, err => {
+                                    if (err) {
+                                        console.error(err);
+                                        return;
+                                    }
+                                    console.log(`File converted at ${openApiFilePath}`);
+                                });
+                            });
+                        } else {
+                            let openApiFileContent = data;
+                            if (fileType == '.json') {
+                                openApiFileContent = openApiFileContent;
+                            } else if (fileType == '.yaml' || fileType == '.yml') {
+                                openApiFileContent = JSON.stringify(YAML.parse(openApiFileContent));
+                            }
+                            let templatePath = path.join(__dirname, 'templates', 'RapiDoc-standalone.html');
+                            fs.readFile(templatePath, 'utf8', (err, data) => {
+                                if (err) {
+                                    console.error(err);
+                                    return;
+                                }
+                                let templateContent = data.replace('OpenApiFileContent', openApiFileContent);
+                                outFilePathHtml = outFilePath + '.html';
+                                fs.writeFile(outFilePathHtml, templateContent, err => {
+                                    if (err) {
+                                        console.error(err);
+                                        return;
+                                    }
+                                    console.log(`Document generated at ${outFilePathHtml}`);
+                                });
+                            });
+                        }
                     });
                 }
             } else {

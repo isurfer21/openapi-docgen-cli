@@ -118,6 +118,24 @@ Similarly, you could generate the `sample.json` along with wrapper file `sample.
 oadg sample.yaml --isolated --json
 ```
 
+### Convert file type
+
+You can convert the file type from `json` to `yaml` or vice-versa, like this
+
+```shell
+oadg sample.json --yaml
+```
+
+That would convert `sample.json` to `sample.yaml`.
+
+Similarly, you could generate the `sample.json` via
+
+```shell
+oadg sample.yaml --json
+```
+
+Just make sure not to use `--isolated` flag in case of file conversion otherwise it will generate wrapper file as well. 
+
 ### Using in dev-mode for real-time edit & preview
 
 In dev-mode, isolated wrapper `.html` is generated automatically and served via development server on browser. So that you can edit the `.json` or `.yaml` source file and preview it live at serving URL.
