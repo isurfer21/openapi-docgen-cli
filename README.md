@@ -1,6 +1,6 @@
 # openapi-docgen-cli
 
-It is a command-line tool to generate an OpenAPI document as output by reading the provided Swagger/OpenAPI based `.json` or `.yaml` file.
+It is a command-line tool to generate an OpenAPI document as output by reading the provided Swagger/OpenAPI based `.json` or `.yaml` file. It can also be used to convert `.json` to `.yaml` file or vice-versa.
 
 ## Prerequisite
 
@@ -14,8 +14,13 @@ You should have these applications installed at your system.
 You can install it at your system via `npm` 
 
 ```shell
-npm install oadg
+npm install oadg --global
+```
 
+or
+
+```shell
+npm i oadg -g
 ```
 
 ## Usage
@@ -65,7 +70,6 @@ To generate doc for any `sample.json`, run this command
 
 ```shell
 oadg sample.json
-
 ```
 
 By default, it would generate a `sample.html` file with embedded content. Here, the `.html` name is extracted from the base filename of `sample.json`, i.e., `sample`. 
@@ -76,7 +80,6 @@ If you specify output name, run this command
 
 ```shell
 oadg sample.json petstore
-
 ```
 
 It would generate a `petstore.html` file with embedded content. Here, the provided custom filename is used for `.html` file.
@@ -97,7 +100,6 @@ If you specify output name, run this command
 
 ```shell
 oadg sample.json petstore --isolated
-
 ```
 
 It would generate a `petstore.html` file with embedded content. Here, the provided custom filename is used for `.html` & `.json` files.
